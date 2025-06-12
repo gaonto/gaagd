@@ -1,1 +1,50 @@
+name: Velog RSS Backup
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: pip install feedparser markdownify
+
+      - name: Fetch and convert RSS
+        run: |
+          python - <<EOF
+          import feedparser
+          from markdownify import markdownify as md
+          import os
+
+          feed = feedparser.parse("https://velog.io/rss/@gaonto")
+          os.makedirs("posts", exist_ok=True)
+
+          for entry in feed.entries:
+              title = entry.title.replace('/', '-')
+              date = entry.published.split('T')[0]
+              content = md(entry.content[0].value)
+              filename = f"posts/{date}-{title}.md"
+              with open(filename, "w", encoding="utf-8") as f:
+                  f.write(f"# {entry.title}\n\n")
+                  f.write(content)
+          EOF
+
+      - name: Commit and push
+        run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
+          git add posts/
+          git commit -m "📝 벨로그 글 백업" || echo "No changes to commit"
+          git push
 
