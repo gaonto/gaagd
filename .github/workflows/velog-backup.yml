@@ -2,7 +2,7 @@ name: Velog RSS Backup
 
 on:
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '0 1 * * *'  # 매일 오전 10시 실행 (UTC 기준 1시)
   workflow_dispatch:
 
 jobs:
@@ -37,14 +37,3 @@ jobs:
               filename = f"posts/{date}-{title}.md"
               with open(filename, "w", encoding="utf-8") as f:
                   f.write(f"# {entry.title}\n\n")
-                  f.write(content)
-          EOF
-
-      - name: Commit and push
-        run: |
-          git config --global user.name github-actions
-          git config --global user.email github-actions@github.com
-          git add posts/
-          git commit -m "📝 벨로그 글 백업" || echo "No changes to commit"
-          git push
-
