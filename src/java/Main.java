@@ -1,22 +1,24 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+class Box {
+    public static <T> void displayArray(List<T> array) {
+        for(T element: array) {
+            System.out.println(element);
+        }
+    }
+}
 
 public class Main {
     public static void main(String[] args) {
-        List<String> listFruits = new ArrayList<>();
-        Set<String> fruits = new HashSet<>();
+        List<Integer> numbers = List.of(1, 2, 3, 4, 5);
 
-        listFruits.add("Apple");
-        listFruits.add("Apple");
+        List<String> words = new ArrayList<>();
+        words.add("apple");
+        words.add("banana");
+        words.add("cherry");
 
-        fruits.add("Apple");
-        fruits.add("Apple");
-
-        for (String listFruit: listFruits) {
-            System.out.println(listFruit);
-        }
-
-        for (String fruit:fruits) {
-            System.out.println(fruit);
-        }
+        Box.displayArray(numbers);
+        Box.displayArray(words);
     }
 }
